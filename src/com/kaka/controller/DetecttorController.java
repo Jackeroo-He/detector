@@ -43,7 +43,6 @@ public class DetecttorController {
         AreaBean areaBean = new AreaBean();
         areaBean.setX(sc.nextInt());
         areaBean.setY(sc.nextInt());
-        System.out.println("==============>has geted area!");
         while(!sc.hasNext("exit")){
             Integer x = sc.nextInt();
             Integer y = sc.nextInt();
