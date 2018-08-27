@@ -17,4 +17,5 @@ public class Constants {
     public static final String LEFT = "L";
     public static final String RIGHT = "R";
     public static final List<String> DIRECTIONS = Arrays.asList(NORTH_DIR, SOUTH_DIR, EAST_DIR, WEST_DIR);
+    public static final String DESTROY_D = "D";
 }

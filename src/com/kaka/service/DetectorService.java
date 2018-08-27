@@ -4,8 +4,6 @@ import com.kaka.bean.AreaBean;
 import com.kaka.bean.DetectorBean;
 import com.kaka.util.Constants;
 
-import java.util.Arrays;
-
 /**
  *  description ......
  *  create by jackeroo
@@ -29,9 +27,9 @@ public class DetectorService {
             //should use logger
             throw new Exception("moveStraight: The direction is not correct!");
         }
-        if (x > areaBean.getX() || y > areaBean.getY()) {
+        if (x > areaBean.getX() || y > areaBean.getY() || x < 0 || y < 0) {
             //should use logger
-            throw new Exception("moveStraight: The direction can not go,the Detector will out area !");
+            detectorBean.setDestroy(Constants.DESTROY_D);
         }
         detectorBean.setX(x);
         detectorBean.setY(y);
@@ -77,4 +75,9 @@ public class DetectorService {
         }
         return true;
     }
+
+    public void logDetector(DetectorBean detectorBean) {
+        System.out.println("The detector position------>" + detectorBean.getX() + " " + detectorBean.getY() + " " + detectorBean.getDirection() + " " + (detectorBean.getDestroy() == null?"":detectorBean.getDestroy()));
+    }
+
 }
