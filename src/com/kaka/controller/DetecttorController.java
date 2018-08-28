@@ -34,7 +34,7 @@ public class DetecttorController {
     //use main method as controller and unit test
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        List<DetectorBean> detectorBeanList = new ArrayList ();
+        List<DetectorBean> brokenDetectorBeanList = new ArrayList ();
         System.out.println("======================>Please input");
         AreaBean areaBean = new AreaBean();
         areaBean.setX(sc.nextInt()); //TODO need check the input (InputMismatchException)
@@ -45,25 +45,28 @@ public class DetecttorController {
             Integer y = sc.nextInt();
             String direction = sc.next();
             DetectorBean detectorBean = new DetectorBean(x,y,direction);
-            moveByInputPrams(areaBean, detectorBean, detectorBeanList, sc);
+            moveByInputPrams(areaBean, detectorBean, brokenDetectorBeanList, sc);
         }
     }
 
-    private static void moveByInputPrams(AreaBean areaBean, DetectorBean detectorBean, List<DetectorBean> detectorBeanList, Scanner sc){
-        DetectorBean newDetectorBean = detectorBean;
-
-        //if(detectorService.checkDetector(detectorBean, areaBean)){
+    private static void moveByInputPrams(AreaBean areaBean, DetectorBean detectorBean, List<DetectorBean> brokenDetectorBeanList, Scanner sc){
             String moveStr = sc.next();
             if(moveStr != null && moveStr.length() > 0) {
                 try {
                     boolean isSuccess = true;
                     for (int i = 0; i < moveStr.length(); i++) {
                         if (Constants.MOVE.equals(String.valueOf(moveStr.charAt(i)))) {
-                            newDetectorBean = detectorService.moveStraight(newDetectorBean, areaBean);
+                           detectorService.moveStraight(detectorBean);
+                           if (brokenDetectorBeanList.size() == 0) {
+                               detectorService.flyOnArea(detectorBean, areaBean);
+                           } else {
+                               detectorService.safeFly(detectorBean, brokenDetectorBeanList);
+                               //detectorService.flyOnArea(detectorBean, areaBean);
+                           }
                         } else if (Constants.LEFT.equals(String.valueOf(moveStr.charAt(i)))) {
-                            newDetectorBean.setDirection(detectorService.turnLeft(newDetectorBean.getDirection()));
+                            detectorService.turnLeft(detectorBean);
                         } else if (Constants.RIGHT.equals(String.valueOf(moveStr.charAt(i)))) {
-                            newDetectorBean.setDirection(detectorService.turnRight(newDetectorBean.getDirection()));
+                            detectorService.turnRight(detectorBean);
                         } else {
                             System.out.println("===========>input error, please input again!");
                             isSuccess = false;
@@ -71,19 +74,12 @@ public class DetecttorController {
                         }
                     }
                     if (isSuccess) {
-                        if(!detectorService.checkDetector(detectorBean, areaBean) || !detectorService.checkDetector(newDetectorBean, areaBean)) {
-                            detectorBeanList.add(detectorBean);
-                            detectorService.logDetector(detectorBean);
-                        } else if(!checkSafe(newDetectorBean, detectorBeanList)) {
-                           detectorBeanList.add(detectorBean);
-                           detectorService.logDetector(detectorBean);
-                       } else {
-                            detectorService.logDetector(newDetectorBean);
-                            detectorBeanList.add(newDetectorBean);
+                        if (null != detectorBean.getDestroy() && detectorBean.getDestroy().equals(Constants.DESTROY_D)){
+                            brokenDetectorBeanList.add(detectorBean);
                         }
-
+                        detectorService.logDetector(detectorBean);
                     } else {
-                        moveByInputPrams(areaBean, detectorBean,detectorBeanList, sc);
+                        moveByInputPrams(areaBean, detectorBean,brokenDetectorBeanList, sc);
                     }
                 } catch (Exception e) {
                     System.out.println("================>exception:" + e.getMessage());
@@ -91,26 +87,6 @@ public class DetecttorController {
             } else {
                 System.out.println("================> please input to move");
             }
-
-       /* } else {
-            sc.nextLine();// read the next line moveStr
-            detectorBean.setDestroy(Constants.DESTROY_D);
-            detectorService.logDetector(detectorBean);
-            detectorBeanList.add(detectorBean);
-        }*/
     }
 
-    private static Boolean checkSafe(DetectorBean newDetectorBean, List<DetectorBean> detectorBeanList) {
-        Boolean  flag = true;
-        for(DetectorBean tempdetectorBean : detectorBeanList){
-            if (null != tempdetectorBean.getDestroy() && tempdetectorBean.getDestroy().equals(Constants.DESTROY_D)) {
-                if(newDetectorBean.getX() >= tempdetectorBean.getX() || newDetectorBean.getY() >= tempdetectorBean.getY()) {
-                    flag =false;
-                    break;
-                }
-            }
-        }
-
-        return flag;
-    }
 }

@@ -10,6 +10,8 @@ public class DetectorBean {
     private Integer y;
     private String direction;
     private String destroy;
+    private Boolean safeX = true;
+    private Boolean safeY = false;
     public DetectorBean(int x, int y, String direction){
         this.x = x;
         this.y = y;
@@ -45,5 +47,21 @@ public class DetectorBean {
 
     public void setDestroy(String destroy) {
         this.destroy = destroy;
+    }
+
+    public Boolean getSafeX() {
+        return safeX;
+    }
+
+    public void setSafeX(Boolean safeX) {
+        this.safeX = safeX;
+    }
+
+    public Boolean getSafeY() {
+        return safeY;
+    }
+
+    public void setSafeY(Boolean safeY) {
+        this.safeY = safeY;
     }
 }
